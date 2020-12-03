@@ -1,0 +1,46 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+plot(cars)
+```
+```{r}
+names(cars)
+```
+
+```{r}
+my_reg = lm(dist~.-1 , data = cars)
+summary(my_reg)
+```
+```{r}
+names(my_reg)
+```
+
+```{r}
+attributes(my_reg)
+```
+
+```{r}
+my_reg
+```
+
+```{r}
+my_reg[["coefficients"]]
+```
+
+
+```{r}
+predict(my_reg, newdata = )
+```
+
+```{r}
+plot(my_reg)
+```
+```{r}
+lm()
+```
+
+
+
