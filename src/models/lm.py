@@ -24,8 +24,9 @@ class lm(BaseModel):
 
     def fit(self):
         # numpy array (k,)
-        self.coefs = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(Y)
-        self.cov = None  # todo: impliment (k,k)
+
+        self.cov = np.linalg.inv(X.T.dot(X))  # todo: impliment (k,k)
+        self.coefs = self.cov.dot(X.T).dot(Y)
         self.std_error = None  # todo: 1d numpy array (k,)
         self.fitted_values = None
         self.residuals = None  # todo: 1d numpy array (n,)

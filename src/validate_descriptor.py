@@ -20,17 +20,17 @@ class ValidFormula:
         self.__formula = value
 
 
-class ValidColumnNames:
+class ValidPredictors:
     """
     Validate if the predictor (column names) are valid
     """
     def __init__(self):
-        self.__columns = []
+        self.__predictors = []
 
     def __get__(self, instance, owner):
-        return self.__columns
+        return self.__predictors
 
     def __set__(self, instance, value):
         if not all(map(is_valid_colname, value)):
             raise ValueError("Expected all column names to only contain alphanum and underscores.")
-        self.__columns = value
+        self.__predictors = value
