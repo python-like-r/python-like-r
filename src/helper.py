@@ -25,3 +25,11 @@ def is_isalnum_or_in_str(c, s):
     :return: True if c is alphanumaric or in s.
     """
     return c.isalnum() or c in s
+
+
+def is_valid_colname(s):
+    """
+    checks that a string only contains alphanumeric chars and underscores.
+    :return: True if all chars pass.
+    """
+    return all(map(lambda c: is_isalnum_or_in_str(c, "_"), s))
