@@ -1,6 +1,8 @@
-from src.validate_descriptor import ModelInputs
+from src.Formula import Formula
+from src.Predictors import Predictors
 
 if __name__ == "__main__":
-    model_inputs = ModelInputs('dist~speed', ['mileage'])
-    print(model_inputs.formula)
-    print(model_inputs.columns)
+    model_formula = Formula('dist~speed')
+    model_predictors = Predictors(['spped', 'mileage'])
+    print(model_formula.formula)
+    print(model_predictors.predictors)
