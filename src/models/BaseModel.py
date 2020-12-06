@@ -1,9 +1,13 @@
+from src.helper import timing
+
+
 class BaseModel:
     """Base class for all models in python like R"""
 
     def __init__(self):
         raise NotImplementedError
 
+    @timing
     def fit(self):
         raise NotImplementedError
 
@@ -37,5 +41,6 @@ class BaseModel:
     def plot(self):
         raise NotImplementedError
 
+    @timing
     def predict(self, newdata):
         raise NotImplementedError
