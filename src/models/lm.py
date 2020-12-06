@@ -1,15 +1,18 @@
-from src.validate_descriptor import ModelInputs
+from src.models import BaseModel
+from src.FormulaParser import FormulaParser
 
-class lm(model):
+class lm(BaseModel):
     """lm is used to fit linear models.
     """
 
     def getX(self):
 
-    def __init__(self, call):
-        model_inputs = ModelInputs('dist~speed', ['mileage'])
-        self.formula = model_inputs.formula
-        self.predictors = model_inputs.columns
+    def __init__(self, formula='dist~speed'):
+        model_params = FormulaParser(formula)
+        self.formula = model_params.formula
+        self.predictors = model_params.predictors
+        self.response = model_params.response
+
         # boolean for if we include an intercept in X
         # my_reg = lm(dist~.-1, data = cars) should handle the no intercept case
         self.intercept = self.formula.getIntercept()
