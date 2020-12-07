@@ -1,11 +1,11 @@
 import numpy as np
-import pandas as pd
 from scipy.stats import t
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 
 from src.models.BaseModel import BaseModel
 from src.utility.FormulaParser import FormulaParser
+from src.utility.helper import rounded_str, get_p_significance
 
 
 class lm(BaseModel):
@@ -121,33 +121,31 @@ class lm(BaseModel):
             raise NotImplementedError
 #         fig, axs = plt.subplots(4)
 
-
-    def rounded_str(self, num):
-        return str(round(num, 3))
-
     def summary(self):
         intercept_idx = len(self.coefs)-1
-        print(self.predictors)
-        coef = 'Intercept'+'\t\t'+self.rounded_str(self.coefs[intercept_idx])+'\t\t'\
-               +self.rounded_str(self.std_error[intercept_idx])+'\t\t'\
-               +self.rounded_str(self.t_values[intercept_idx])+'\t\t'\
-               +self.rounded_str(self.p_values[intercept_idx])+'\n'
+        pad_len = len(max(self.predictors, key=len))
+        fill_char = ' '
+        coef = 'Intercept'.ljust(pad_len, fill_char)+'\t'\
+               +rounded_str(self.coefs[intercept_idx])+'\t\t'\
+               +rounded_str(self.std_error[intercept_idx])+'\t\t'\
+               +rounded_str(self.t_values[intercept_idx])+'\t\t'\
+               +rounded_str(self.p_values[intercept_idx])+get_p_significance(self.p_values[intercept_idx])+'\n'
         for i in range(len(self.coefs)-1):
-            coef += self.predictors[i+1]+'\t\t'\
-                    +self.rounded_str(self.coefs[i])+'\t\t'\
-                    +self.rounded_str(self.std_error[i])+'\t\t'\
-                    +self.rounded_str(self.t_values[i])+'\t\t'\
-                    +self.rounded_str(self.p_values[i])+'\n'
+            coef += self.predictors[i].ljust(pad_len, fill_char)+'\t'\
+                    +rounded_str(self.coefs[i])+'\t\t'\
+                    +rounded_str(self.std_error[i])+'\t\t'\
+                    +rounded_str(self.t_values[i])+'\t\t'\
+                    +rounded_str(self.p_values[i])+get_p_significance(self.p_values[i])+'\n'
 
-        summary = self.summary_text.format(formula=self.formula
+        summary = self.summary_text.format(formula=self.formula, data=''
                                            , resid_min=min(self.residuals)
                                            , resid_1Q=np.quantile(self.residuals, .25)
                                            , resid_median=np.median(self.residuals)
                                            , resid_3Q=np.quantile(self.residuals, .75)
                                            , resid_max=max(self.residuals)
                                            , coef=coef
-                                           , std_error=self.rounded_str(self.residual_standard_error)
-                                           , r_squared=self.rounded_str(self.r_squared)
-                                           , adjusted_r_squared=self.rounded_str(self.adjusted_r_squared)
+                                           , std_error=rounded_str(self.residual_standard_error)
+                                           , r_squared=rounded_str(self.r_squared)
+                                           , adjusted_r_squared=rounded_str(self.adjusted_r_squared)
                                            , freedom=self.n-self.k)
         print(summary)

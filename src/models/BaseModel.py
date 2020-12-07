@@ -7,14 +7,14 @@ class BaseModel:
     def __init__(self):
         self.summary_text="" \
                         "\nCall: "\
-                        "\nlm(formula = {formula}, data = cars) "\
+                        "\nlm(formula = {formula}, data = {data}) "\
                         "\n"\
                         "\nResiduals: "\
                         "\nMin\t1Q\tMedian\t3Q\tMax "\
                         "\n{resid_min}\t{resid_1Q}\t{resid_median}\t{resid_3Q}\t{resid_max}"\
                         "\n"\
                         "\nCoefficients:"\
-                        "\n\t\tEstimate\tStd. Error\tt value\tPr(>|t|)"\
+                        "\n\t\tEstimate\tStd. Error\tt value\t\tPr(>|t|)"\
                         "\n{coef}"\
                         "\n---"\
                         "\nSignif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1"\
@@ -51,7 +51,6 @@ class BaseModel:
             F-statistic: 89.57 on 1 and 48 DF,  p-value: 1.49e-12
         """
         raise NotImplementedError
-        # return str
 
     def plot(self):
         raise NotImplementedError
