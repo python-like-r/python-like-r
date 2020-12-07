@@ -1,4 +1,4 @@
-from src.helper import is_isalnum_or_in_str, is_valid_colname
+from src.utility.helper import is_isalnum_or_in_str, is_valid_colname
 
 
 class ValidFormula:
