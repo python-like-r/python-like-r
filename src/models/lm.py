@@ -1,8 +1,7 @@
 import numpy as np
 
-from src.models import BaseModel
-from src.FormulaParser import FormulaParser
-
+from src.models.BaseModel import BaseModel
+from src.utility.FormulaParser import FormulaParser
 
 
 class lm(BaseModel):
@@ -12,6 +11,9 @@ class lm(BaseModel):
     """
 
     def __init__(self, formula='dist~speed', data=None):
+        # Initializing parent class
+        super(lm, self).__init__()
+
         self.formula = formula
         self.data = data
         self.formula_parser = FormulaParser(formula, list(data.columns))
@@ -53,7 +55,7 @@ class lm(BaseModel):
         # (k,)
         self.t_values = self.coefs / self.std_error
         # (k,)
-        self.p_values = None
+        self.p_values = np.full(len(self.coefs), 0)
         # (1,)
         self.r_squared = None
         # (1,)
@@ -67,15 +69,30 @@ class lm(BaseModel):
         #         self.coefs.dot(X.T)
         pass
 
-    def get_summary():
-        # some code
-        return some_string
+    def rounded_str(self, num):
+        return str(round(num, 3))
 
     def summary(self):
-        print(get_summary())
+        intercept_idx = len(self.coefs)-1
+        print(self.predictors)
+        coef = 'Intercept'+'\t\t'+self.rounded_str(self.coefs[intercept_idx])+'\t\t'\
+               +self.rounded_str(self.std_error[intercept_idx])+'\t\t'\
+               +self.rounded_str(self.t_values[intercept_idx])+'\t\t'\
+               +self.rounded_str(self.p_values[intercept_idx])+'\n'
+        for i in range(len(self.coefs)-1):
+            coef += self.predictors[i+1]+'\t\t'\
+                    +self.rounded_str(self.coefs[i])+'\t\t'\
+                    +self.rounded_str(self.std_error[i])+'\t\t'\
+                    +self.rounded_str(self.t_values[i])+'\t\t'\
+                    +self.rounded_str(self.p_values[i])+'\n'
+
+        summary = self.summary_text.format(formula=self.formula, resid_min=min(self.residuals)
+                                           , resid_1Q=np.quantile(self.residuals, .25)
+                                           , resid_median=np.median(self.residuals)
+                                           , resid_3Q=np.quantile(self.residuals, .75), resid_max=max(self.residuals)
+                                           , coef=coef, std_error=self.std_error, r_squared=self.r_squared
+                                           , adjusted_r_squared=self.adjusted_r_squared,freedom=None)
+        print(summary)
 
     def plot(self):
         raise NotImplementedError
-
-
-

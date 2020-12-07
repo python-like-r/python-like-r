@@ -1,11 +1,26 @@
-from src.helper import timing
+from src.utility.helper import timing
 
 
 class BaseModel:
     """Base class for all models in python like R"""
 
     def __init__(self):
-        raise NotImplementedError
+        self.summary_text="" \
+                        "\nCall: "\
+                        "\nlm(formula = {formula}, data = cars) "\
+                        "\n"\
+                        "\nResiduals: "\
+                        "\nMin\t1Q\tMedian\t3Q\tMax "\
+                        "\n{resid_min}\t{resid_1Q}\t{resid_median}\t{resid_3Q}\t{resid_max}"\
+                        "\n"\
+                        "\nCoefficients:"\
+                        "\n\t\tEstimate\tStd. Error\tt value\tPr(>|t|)"\
+                        "\n{coef}"\
+                        "\n---"\
+                        "\nSignif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1"\
+                        "\n"\
+                        "\nResidual standard error: {std_error} on {freedom} degrees of freedom"\
+                        "\nMultiple R-squared:  {r_squared},	Adjusted R-squared:  {adjusted_r_squared}"\
 
     @timing
     def fit(self):

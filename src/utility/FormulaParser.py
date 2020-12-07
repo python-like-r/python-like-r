@@ -1,4 +1,4 @@
-from src.validate_descriptor import ValidFormula, ValidPredictors
+from src.utility.validate_descriptor import ValidFormula, ValidPredictors
 
 
 def formula(attr):

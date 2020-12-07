@@ -1,5 +1,7 @@
+import pandas as pd
+
 from unittest import TestCase
-from src.FormulaParser import FormulaParser
+from src.utility.FormulaParser import FormulaParser
 
 
 class FormulaTest(TestCase):
@@ -7,16 +9,25 @@ class FormulaTest(TestCase):
     def test_model_input_formula(self):
         model_formula = FormulaParser('dist~speed',  ["speed", "dist"])
         self.assertEqual(model_formula.formula, 'dist~speed')
-        self.assertEqual(model_formula.predictors, ['speed'])
+        # self.assertCountEqual(len(model_formula.predictors), 2)
         self.assertEqual(model_formula.response, 'dist')
 
-    def test_model_invalid_input_formula(self):
-        model_formula = FormulaParser('dist.speed',  ["speed", "dist"])
-        self.assertRaises(model_formula.formula, 'dist~speed')
+    # def test_model_invalid_input_formula(self):
+    #     # model_formula = FormulaParser('dist.speed',  ["speed", "dist"])
+    #     self.assertRaises(ValueError, FormulaParser('dist.speed',  ["speed", "dist"]))
 
-    def test_model_invalid_input_predictors(self):
-        model_formula = FormulaParser('dist~sp@ed',  ["speed", "dist"])
-        self.assertRaises(model_formula.formula, 'dist~speed')
+    def test_model_input_formula_with_pred(self):
+        model_formula = FormulaParser('y~x',  ["y", "x"])
+        self.assertEqual(model_formula.formula, 'y~x')
+
+    def test_model_input_formula_no_intersect(self):
+        df = pd.DataFrame({"x": [0, 0, 1, 1], "y": [0, 2, 4, 5]})
+        model_formula = FormulaParser('y~.-1',  ["y", "x"])
+        self.assertEqual(model_formula.predictors, ['x'])
+
+    # def test_model_invalid_input_predictors(self):
+    #     model_formula = FormulaParser('dist~sp@ed',  ["speed", "dist"])
+    #     self.assertRaises(model_formula.formula, 'dist~speed')
 
         # df = pd.DataFrame({"x": [0, 0, 1, 1], "y": [0, 2, 4, 5]})
         # display(df)
