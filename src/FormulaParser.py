@@ -64,6 +64,9 @@ class FormulaParser:
 
         return list(preds_set)  # column_names ##get X and set here
 
+    def has_intercept(self):
+        return "Intercept" in self.predictors
+
 
 # my_form = FormulaParser("dist~speed+wheels", ["dist", "speed", "wheels"])
 # my_form.response
