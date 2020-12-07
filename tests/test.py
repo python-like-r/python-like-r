@@ -25,3 +25,6 @@ class FormulaTest(TestCase):
         # no intercept models
         # my_lm = lm("y~.-1",data = df)
         # my_lm = lm("y~.+0",data = df)
+        # my_lm.fit()
+        # print("coefs", my_lm.coefs)
+        # print("std errors:", my_lm.std_error)
