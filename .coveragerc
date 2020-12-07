@@ -1,5 +1,9 @@
 [report]
+show_missing = true
+precision = 2
 omit =
     */tests.py
     */test_*.py
     */*_tests.py
+    *_init__.py
+    *_main__.py
