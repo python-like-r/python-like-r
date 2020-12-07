@@ -1,0 +1,25 @@
+---
+title: "Example_r"
+output: html_notebook
+---
+
+
+```{r}
+x = c(0,0,1,1) 
+y = c(0,2,4,5)
+df = data.frame(x,y)
+df
+```
+
+```{r}
+my_lm = lm(y~.,data = df)
+summary(my_lm)
+```
+
+```{r}
+plot(my_lm, which = 1)
+```
+
+
+
+
