@@ -125,13 +125,21 @@ class lm(BaseModel):
         intercept_idx = len(self.coefs)-1
         pad_len = len(max(self.predictors, key=len))
         fill_char = ' '
-        coef = 'Intercept'.ljust(pad_len, fill_char)+'\t'\
-               +rounded_str(self.coefs[intercept_idx])+'\t\t'\
-               +rounded_str(self.std_error[intercept_idx])+'\t\t'\
-               +rounded_str(self.t_values[intercept_idx])+'\t\t'\
-               +rounded_str(self.p_values[intercept_idx])+get_p_significance(self.p_values[intercept_idx])+'\n'
-        for i in range(len(self.coefs)-1):
-            coef += self.predictors[i].ljust(pad_len, fill_char)+'\t'\
+        coef = ''
+        pred_start_idx = 0
+        coef_len = len(self.predictors)
+        
+        if self.formula_parser.has_intercept():
+            coef = 'Intercept'.ljust(pad_len, fill_char)+'\t'\
+                   +rounded_str(self.coefs[intercept_idx])+'\t\t'\
+                   +rounded_str(self.std_error[intercept_idx])+'\t\t'\
+                   +rounded_str(self.t_values[intercept_idx])+'\t\t'\
+                   +rounded_str(self.p_values[intercept_idx])+get_p_significance(self.p_values[intercept_idx])+'\n'
+            coef_len = len(self.predictors) - 1
+            pred_start_idx = 1
+
+        for i in range(coef_len):
+            coef += self.predictors[i+pred_start_idx].ljust(pad_len, fill_char)+'\t'\
                     +rounded_str(self.coefs[i])+'\t\t'\
                     +rounded_str(self.std_error[i])+'\t\t'\
                     +rounded_str(self.t_values[i])+'\t\t'\
