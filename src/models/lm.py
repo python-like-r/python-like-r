@@ -123,7 +123,7 @@ class lm(BaseModel):
 
     def summary(self):
         intercept_idx = len(self.coefs)-1
-        pad_len = len(max(self.predictors, key=len))
+        pad_len = max(15,len(max(self.predictors, key=len)))
         intercept_idx = -1
         fill_char = ' '
         coef = ''
@@ -145,7 +145,7 @@ class lm(BaseModel):
                         +rounded_str(self.t_values[i])+'\t\t'\
                         +rounded_str(self.p_values[i])+get_p_significance(self.p_values[i])+'\n'
 
-        summary = self.summary_text.format(formula=self.formula, data=''
+        summary = self.summary_text.format(formula=self.formula, data='df'
                                            , resid_min=min(self.residuals)
                                            , resid_1Q=np.quantile(self.residuals, .25)
                                            , resid_median=np.median(self.residuals)
