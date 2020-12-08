@@ -53,13 +53,13 @@ def get_p_significance(p_value):
     :return: statistical significance indicator
     """
     if 0 < p_value < 0.001:
-        return '***'
+        return ' ***'
     elif 0.001 < p_value < 0.01:
-        return '**'
+        return ' **'
     elif 0.01 < p_value < 0.05:
-        return '*'
+        return ' *'
     elif 0.05 < p_value < 0.1:
-        return '.'
+        return ' .'
     elif 0.1 < p_value < 1:
         return ' '
 
