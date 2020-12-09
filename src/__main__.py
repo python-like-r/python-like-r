@@ -11,3 +11,5 @@ if __name__ == "__main__":
     my_lm = lm("y~.-1", data=df)
     my_lm.fit()
     my_lm.summary()
+    my_lm.plot(which=1)
+    my_lm.plot(which=2)
