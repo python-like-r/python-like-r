@@ -25,6 +25,18 @@ class FormulaTest(TestCase):
         model_formula = FormulaParser('y~.-1',  ["y", "x"])
         self.assertEqual(model_formula.predictors, ['x'])
 
+
+class LMTest(TestCase):
+
+    def test_lm_fit(self):
+        pass
+
+    def test_lm_predict(self):
+        pass
+
+    def test_lm_summary(self):
+        pass
+
     # def test_model_invalid_input_predictors(self):
     #     model_formula = FormulaParser('dist~sp@ed',  ["speed", "dist"])
     #     self.assertRaises(model_formula.formula, 'dist~speed')
@@ -39,3 +51,9 @@ class FormulaTest(TestCase):
         # my_lm.fit()
         # print("coefs", my_lm.coefs)
         # print("std errors:", my_lm.std_error)
+
+
+class HelperTest(TestCase):
+
+    def test_rounded_string(self):
+        pass
