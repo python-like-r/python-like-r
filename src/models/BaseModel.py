@@ -1,10 +1,11 @@
+from src.utility.FormulaParser import FormulaParser
 from src.utility.helper import timing
 
 
 class BaseModel:
     """Base class for all models in python like R"""
 
-    def __init__(self):
+    def __init__(self, formula, data):
         self.summary_text="" \
                         "\nCall: "\
                         "\nlm(formula = {formula}, data = {data}) "\
@@ -21,6 +22,26 @@ class BaseModel:
                         "\n"\
                         "\nResidual standard error: {std_error} on {freedom} degrees of freedom"\
                         "\nMultiple R-squared:  {r_squared},	Adjusted R-squared:  {adjusted_r_squared}"\
+
+        self.formula = formula
+        self.data = data
+        self.formula_parser = FormulaParser(formula, list(data.columns))
+
+        # gets true y values
+        self.response = self.formula_parser.response
+        self.y = self.data[self.response]
+
+        # gets design matrix
+        self.predictors = self.formula_parser.predictors
+        self.X = self.getX(data)
+
+    def getX(self, data):
+        if self.formula_parser.has_intercept():
+            X = data[[col for col in self.predictors if col != "Intercept"]]
+            X["Intercept"] = 1
+        else:
+            X = data[self.predictors]
+        return X
 
     @timing
     def fit(self):

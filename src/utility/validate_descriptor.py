@@ -1,4 +1,4 @@
-from src.utility.helper import is_isalnum_or_in_str, is_valid_colname
+from src.utility.helper import is_alnum_or_in_str, is_valid_colname
 
 
 class ValidFormula:
@@ -13,7 +13,7 @@ class ValidFormula:
         return self.__formula
 
     def __set__(self, instance, value):
-        if not all(map(lambda c: is_isalnum_or_in_str(c, "_()~.+-"), value)):
+        if not all(map(lambda c: is_alnum_or_in_str(c, "_()~.+-"), value)):
             raise ValueError("Invalid character found in formula.")
         if value.count("~") != 1:
             raise ValueError("Formula should contain exactly one '~'.")
