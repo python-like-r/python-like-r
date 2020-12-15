@@ -62,7 +62,7 @@ class FormulaParser:
 
         preds_set = preds_add.difference(preds_remove)
 
-        return list(preds_set)  # column_names ##get X and set here
+        return [col for col in ["Intercept"]+self.columns if col in preds_set]
 
     def has_intercept(self):
         return "Intercept" in self.predictors

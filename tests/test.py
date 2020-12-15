@@ -6,24 +6,52 @@ from src.utility.FormulaParser import FormulaParser
 
 class FormulaTest(TestCase):
 
-    def test_model_input_formula(self):
-        model_formula = FormulaParser('dist~speed',  ["speed", "dist"])
-        self.assertEqual(model_formula.formula, 'dist~speed')
-        # self.assertCountEqual(len(model_formula.predictors), 2)
-        self.assertEqual(model_formula.response, 'dist')
-
-    # def test_model_invalid_input_formula(self):
-    #     # model_formula = FormulaParser('dist.speed',  ["speed", "dist"])
-    #     self.assertRaises(ValueError, FormulaParser('dist.speed',  ["speed", "dist"]))
-
-    def test_model_input_formula_with_pred(self):
-        model_formula = FormulaParser('y~x',  ["y", "x"])
+    def test_input_formula(self):
+        #test invalid chars
+        self.assertRaises(ValueError, lambda: FormulaParser('y~x%', ["x", "y"]))
+        self.assertRaises(ValueError, lambda: FormulaParser('y~x!', ["x", "y"]))
+        #test number of "~" is not 1
+        self.assertRaises(ValueError,lambda: FormulaParser('y~~x',  ["x", "y"]))
+        self.assertRaises(ValueError, lambda: FormulaParser('yx', ["x", "y"]))
+        #test removing spaces
+        model_formula = FormulaParser('y~ x ', ["y", "x"])
         self.assertEqual(model_formula.formula, 'y~x')
 
-    def test_model_input_formula_no_intersect(self):
-        df = pd.DataFrame({"x": [0, 0, 1, 1], "y": [0, 2, 4, 5]})
-        model_formula = FormulaParser('y~.-1',  ["y", "x"])
-        self.assertEqual(model_formula.predictors, ['x'])
+    def test_get_response(self):
+        #check basic functionality
+        model_formula = FormulaParser('y~x', ["y", "x"])
+        self.assertEqual(model_formula.get_response(), 'y')
+        #check if response is not in column names
+        self.assertRaises(ValueError, lambda: FormulaParser('y~x', ["x"]))
+
+    def test_get_predictors(self):
+        test_cases = [
+            (FormulaParser('y~x', ["x", "y"]).get_predictors(), ["Intercept","x"]),
+            (FormulaParser('y~x1+x2', ["x1","x2", "y"]).get_predictors(), ["Intercept","x1","x2"]),
+            (FormulaParser('y~x2+x1', ["x1","x2", "y"]).get_predictors(), ["Intercept","x1","x2"]),
+            (FormulaParser('y~.', ["x1", "x2", "y"]).get_predictors(), ["Intercept", "x1", "x2"]),
+            (FormulaParser('y~.-x1', ["x1", "x2", "y"]).get_predictors(), ["Intercept", "x2"]),
+            (FormulaParser('y~.+1', ["x1", "x2", "y"]).get_predictors(), ["Intercept", "x1", "x2"]),
+            (FormulaParser('y~.-1', ["x1", "x2", "y"]).get_predictors(), ["x1", "x2"]),
+            (FormulaParser('y~.+0', ["x1", "x2", "y"]).get_predictors(), ["x1", "x2"])
+        ]
+        for case, expect in test_cases:
+            self.assertEqual(case,expect)
+
+
+    def test_has_intercept(self):
+        test_cases = [
+            (FormulaParser('y~x', ["x", "y"]).has_intercept(), True),
+            (FormulaParser('y~x1+x2', ["x1", "x2", "y"]).has_intercept(), True),
+            (FormulaParser('y~x2+x1', ["x1", "x2", "y"]).has_intercept(), True),
+            (FormulaParser('y~.', ["x1", "x2", "y"]).has_intercept(), True),
+            (FormulaParser('y~.-x1', ["x1", "x2", "y"]).has_intercept(), True),
+            (FormulaParser('y~.+1', ["x1", "x2", "y"]).has_intercept(), True),
+            (FormulaParser('y~.-1', ["x1", "x2", "y"]).has_intercept(), False),
+            (FormulaParser('y~.+0', ["x1", "x2", "y"]).has_intercept(), False)
+        ]
+        for case, expect in test_cases:
+            self.assertEqual(case, expect)
 
 
 class LMTest(TestCase):
