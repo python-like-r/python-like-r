@@ -2,7 +2,7 @@ import pandas as pd
 
 from unittest import TestCase
 from src.utility.FormulaParser import FormulaParser
-
+from src.models.lm import lm
 
 class FormulaTest(TestCase):
 
@@ -13,9 +13,12 @@ class FormulaTest(TestCase):
         #test number of "~" is not 1
         self.assertRaises(ValueError,lambda: FormulaParser('y~~x',  ["x", "y"]))
         self.assertRaises(ValueError, lambda: FormulaParser('yx', ["x", "y"]))
+        #test list properties
+        self.assertRaises(ValueError, lambda: FormulaParser('y~x', ["x#", "y"]))
         #test removing spaces
         model_formula = FormulaParser('y~ x ', ["y", "x"])
         self.assertEqual(model_formula.formula, 'y~x')
+
 
     def test_get_response(self):
         #check basic functionality
@@ -27,6 +30,7 @@ class FormulaTest(TestCase):
     def test_get_predictors(self):
         test_cases = [
             (FormulaParser('y~x', ["x", "y"]).get_predictors(), ["Intercept","x"]),
+            (FormulaParser('y_~x_1+x_2', ["x_1","x_2", "y_"]).get_predictors(), ["Intercept","x_1","x_2"]),
             (FormulaParser('y~x1+x2', ["x1","x2", "y"]).get_predictors(), ["Intercept","x1","x2"]),
             (FormulaParser('y~x2+x1', ["x1","x2", "y"]).get_predictors(), ["Intercept","x1","x2"]),
             (FormulaParser('y~.', ["x1", "x2", "y"]).get_predictors(), ["Intercept", "x1", "x2"]),
@@ -53,16 +57,34 @@ class FormulaTest(TestCase):
         for case, expect in test_cases:
             self.assertEqual(case, expect)
 
+df1 = pd.DataFrame({"x": [0, 0, 1, 1], "y": [0, 2, 4, 5]})
 
-class LMTest(TestCase):
+class baseModel(TestCase):
+    def test_getX(self):
+        my_model = baseModel("y~.", data=df1)
+        assert df1.equals(my_lm.getX(df1))
+
+class baseRegressor(TestCase):
+    def test(self):
+        pass
+
+class baseClassifier(TestCase):
+    def test(self):
+        pass
+
+class Test(TestCase):
 
     def test_lm_fit(self):
-        pass
+        my_lm = lm("y~.", data=df)
+        my_lm.fit()
 
     def test_lm_predict(self):
         pass
 
     def test_lm_summary(self):
+        pass
+
+    def test_lm_plot(self):
         pass
 
     # def test_model_invalid_input_predictors(self):

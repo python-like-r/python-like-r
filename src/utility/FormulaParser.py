@@ -23,20 +23,20 @@ class FormulaParser:
     def __init__(self, formula_str, columns):
         # check that column names only contain letters and underscores.
         self.formula = formula_str.replace(" ", "")
-        self.columns = columns
+        self.column_names = columns
         self.response = self.get_response()
         self.predictors = self.get_predictors()
 
     def get_response(self):
         response = self.formula.split("~")[0]
-        if not (response in self.columns):
+        if not (response in self.column_names):
             raise ValueError("response not found in column names.")
         return response  # get the value from the formula string and set it
 
     def get_predictors(self):
         preds = self.formula.split("~")[1]
         # case: "y~."
-        all_col = set(self.columns)
+        all_col = set(self.column_names)
         all_col.remove(self.response)
         preds = preds.replace(".", "+".join(all_col))
         # split into list
@@ -62,7 +62,7 @@ class FormulaParser:
 
         preds_set = preds_add.difference(preds_remove)
 
-        return [col for col in ["Intercept"]+self.columns if col in preds_set]
+        return [col for col in ["Intercept"]+self.column_names if col in preds_set]
 
     def has_intercept(self):
         return "Intercept" in self.predictors
