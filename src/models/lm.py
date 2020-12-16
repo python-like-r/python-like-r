@@ -122,13 +122,14 @@ class lm(BaseRegressor):
         :return: summary
         """
         print('Predictors: ', self.predictors)
-        intercept_idx = self.predictors.index('Intercept')
         pad_len = max(15,len(max(self.predictors, key=len)))
         fill_char = ' '
         coef = ''
+        intercept_idx = -1
 
         
         if self.formula_parser.has_intercept():
+            intercept_idx = self.predictors.index('Intercept')
             coef = 'Intercept'.ljust(pad_len, fill_char)+'\t'\
                    +rounded_str(self.coefs[intercept_idx])+'\t\t'\
                    +rounded_str(self.std_error[intercept_idx])+'\t\t'\
