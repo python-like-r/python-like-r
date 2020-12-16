@@ -3,42 +3,22 @@ from scipy.stats import t
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 
-from src.models.BaseModel import BaseModel
-from src.utility.FormulaParser import FormulaParser
+from src.models.BaseRegressor import BaseRegressor
 from src.utility.helper import rounded_str, get_p_significance
 
 
-class lm(BaseModel):
+class lm(BaseRegressor):
     """lm is used to fit linear models.
     :formula: a string of the form "y~x1+x2" (includes an intercept by default)
     :data: a pandas DataFrame
     """
 
-    def __init__(self, formula='dist~speed', data=None):
+    def __init__(self, formula, data=None):
         # Initializing parent class
-        super(lm, self).__init__()
-
-        self.formula = formula
-        self.data = data
-        self.formula_parser = FormulaParser(formula, list(data.columns))
-
-        # gets true y values
-        self.response = self.formula_parser.response
-        self.y = self.data[self.response]
-
-        # gets design matrix
-        self.predictors = self.formula_parser.predictors
-        self.X = self.getX(data)
-
-    def getX(self, data):
-        if self.formula_parser.has_intercept():
-            X = data[[col for col in self.predictors if col != "Intercept"]]
-            X["Intercept"] = 1
-        else:
-            X = data[self.predictors]
-        return X
+        super(lm, self).__init__(formula, data)
 
     def fit(self):
+        """We implemented this from scratch using closed form solutions and standard errors."""
         # numpy array (n,k)
         X = np.array(self.X)
         n = X.shape[0]
@@ -51,6 +31,9 @@ class lm(BaseModel):
         self.cov = np.linalg.inv(X.T.dot(X))
         # (k,)
         self.coefs = self.cov.dot(X.T).dot(y)
+        # (1,)
+        if self.formula_parser.has_intercept():
+            self.intercept = self.coefs[0]
         # (n,)
         self.fitted_values = self.coefs.dot(X.T)
         # (n,)
@@ -66,6 +49,7 @@ class lm(BaseModel):
         # (1,)
         self.residual_standard_error = np.sqrt(self.est_sigma_squared)
         # (k,)
+        #vectorizing math on array
         self.std_error = np.diag(self.est_sigma_squared * self.cov) ** .5  # todo: 1d numpy array (k,)
         # (k,)
         self.t_values = self.coefs / self.std_error
@@ -93,6 +77,15 @@ class lm(BaseModel):
             raise NotImplementedError
 
     def plot(self, which=None):
+        """
+        Implemented first three plots that are part of `R` plot command
+            1. "Residuals vs Fitted",
+            2. "Standardized residuals",
+            3. "Scale-Location"
+            4. This could be implemented later
+        :param which:
+        :return:
+        """
         if which == 1:
             # Residuals vs Fitted
             plt.scatter(self.fitted_values, self.residuals)
@@ -121,23 +114,38 @@ class lm(BaseModel):
             raise NotImplementedError
 #         fig, axs = plt.subplots(4)
 
-    def summary(self):
-        intercept_idx = len(self.coefs)-1
-        pad_len = len(max(self.predictors, key=len))
+    def summary(self, print_summary=True):
+        """
+        Creating R like summary for the linear model.
+        Tried implementing the summary with the Jinja template, this could be a good further extension to the project
+        :param print_summary: Bool to either print or return the summary
+        :return: summary
+        """
+        print('Predictors: ', self.predictors)
+        pad_len = max(15,len(max(self.predictors, key=len)))
         fill_char = ' '
-        coef = 'Intercept'.ljust(pad_len, fill_char)+'\t'\
-               +rounded_str(self.coefs[intercept_idx])+'\t\t'\
-               +rounded_str(self.std_error[intercept_idx])+'\t\t'\
-               +rounded_str(self.t_values[intercept_idx])+'\t\t'\
-               +rounded_str(self.p_values[intercept_idx])+get_p_significance(self.p_values[intercept_idx])+'\n'
-        for i in range(len(self.coefs)-1):
-            coef += self.predictors[i].ljust(pad_len, fill_char)+'\t'\
-                    +rounded_str(self.coefs[i])+'\t\t'\
-                    +rounded_str(self.std_error[i])+'\t\t'\
-                    +rounded_str(self.t_values[i])+'\t\t'\
-                    +rounded_str(self.p_values[i])+get_p_significance(self.p_values[i])+'\n'
+        coef = ''
+        intercept_idx = -1
 
-        summary = self.summary_text.format(formula=self.formula, data=''
+        
+        if self.formula_parser.has_intercept():
+            intercept_idx = self.predictors.index('Intercept')
+            coef = 'Intercept'.ljust(pad_len, fill_char)+'\t'\
+                   +rounded_str(self.coefs[intercept_idx])+'\t\t'\
+                   +rounded_str(self.std_error[intercept_idx])+'\t\t'\
+                   +rounded_str(self.t_values[intercept_idx])+'\t\t'\
+                   +rounded_str(self.p_values[intercept_idx])+get_p_significance(self.p_values[intercept_idx])+'\n'
+            intercept_idx = self.predictors.index('Intercept')
+
+        for i in range(len(self.predictors)):
+            if i != intercept_idx:
+                coef += self.predictors[i].ljust(pad_len, fill_char)+'\t'\
+                        +rounded_str(self.coefs[i])+'\t\t'\
+                        +rounded_str(self.std_error[i])+'\t\t'\
+                        +rounded_str(self.t_values[i])+'\t\t'\
+                        +rounded_str(self.p_values[i])+get_p_significance(self.p_values[i])+'\n'
+
+        summary = self.summary_text.format(formula=self.formula, data='df'
                                            , resid_min=min(self.residuals)
                                            , resid_1Q=np.quantile(self.residuals, .25)
                                            , resid_median=np.median(self.residuals)
@@ -148,4 +156,7 @@ class lm(BaseModel):
                                            , r_squared=rounded_str(self.r_squared)
                                            , adjusted_r_squared=rounded_str(self.adjusted_r_squared)
                                            , freedom=self.n-self.k)
-        print(summary)
+        if print_summary:
+            print(summary)
+        else:
+            return(summary)
