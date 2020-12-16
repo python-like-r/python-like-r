@@ -104,7 +104,7 @@ class lm(BaseRegressor):
             raise NotImplementedError
 #         fig, axs = plt.subplots(4)
 
-    def summary(self):
+    def summary(self, print=True):
         intercept_idx = len(self.coefs)-1
         pad_len = max(15,len(max(self.predictors, key=len)))
         intercept_idx = -1
@@ -139,4 +139,7 @@ class lm(BaseRegressor):
                                            , r_squared=rounded_str(self.r_squared)
                                            , adjusted_r_squared=rounded_str(self.adjusted_r_squared)
                                            , freedom=self.n-self.k)
-        print(summary)
+        if print:
+            print(summary)
+        else:
+            return(summary)
