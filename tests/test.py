@@ -52,6 +52,8 @@ class FormulaParserTest(TestCase):
         for case, expect in test_cases:
             self.assertEqual(case,expect)
 
+        self.assertRaises(ValueError, lambda: FormulaParser('y~z', ["x"]))
+
     def test_has_intercept(self):
         test_cases = [
             (FormulaParser('y~x', ["x", "y"]).has_intercept(), True),
