@@ -121,9 +121,9 @@ class lm(BaseRegressor):
         :param print_summary: Bool to either print or return the summary
         :return: summary
         """
-        intercept_idx = len(self.coefs)-1
+        print('Predictors: ', self.predictors)
+        intercept_idx = self.predictors.index('Intercept')
         pad_len = max(15,len(max(self.predictors, key=len)))
-        intercept_idx = -1
         fill_char = ' '
         coef = ''
 
