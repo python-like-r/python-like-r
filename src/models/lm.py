@@ -18,6 +18,7 @@ class lm(BaseRegressor):
         super(lm, self).__init__(formula, data)
 
     def fit(self):
+        """We implemented this from scratch using closed form solutions and standard errors."""
         # numpy array (n,k)
         X = np.array(self.X)
         n = X.shape[0]
@@ -104,7 +105,7 @@ class lm(BaseRegressor):
             raise NotImplementedError
 #         fig, axs = plt.subplots(4)
 
-    def summary(self):
+    def summary(self, print_summary=True):
         intercept_idx = len(self.coefs)-1
         pad_len = max(15,len(max(self.predictors, key=len)))
         intercept_idx = -1
@@ -139,4 +140,7 @@ class lm(BaseRegressor):
                                            , r_squared=rounded_str(self.r_squared)
                                            , adjusted_r_squared=rounded_str(self.adjusted_r_squared)
                                            , freedom=self.n-self.k)
-        print(summary)
+        if print_summary:
+            print(summary)
+        else:
+            return(summary)
