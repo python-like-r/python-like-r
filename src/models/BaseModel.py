@@ -3,7 +3,17 @@ from src.utility.helper import timing
 
 
 class BaseModel:
-    """Base class for all models in python like R"""
+    """
+    Base class for all models in python like R
+    Implementing base functionalities for all models
+        1. Formula parsing
+        2. Getting Predictors
+    Defining methods that needs to be implemented by the child model classes inheriting this class
+        1. fit
+        2. predict
+        3. plot
+        4. summary
+    """
 
     def __init__(self, formula, data):
         self.summary_text="" \

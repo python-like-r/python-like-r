@@ -3,7 +3,7 @@ from src.models.BaseModel import BaseModel
 
 class BaseClassifier(BaseModel):
     """
-    TODO: Write comments
+    Base classifier implements `predict_proba` in addition to `fit`, `predit` which is inherited from `BaseModel`
     """
     def __init__(self, formula, data=None):
         # Initializing parent class

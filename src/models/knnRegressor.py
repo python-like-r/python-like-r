@@ -1,6 +1,7 @@
 from sklearn.neighbors import KNeighborsRegressor
 from src.models.BaseRegressor import BaseRegressor
 
+
 class knnRegressor(BaseRegressor):
     """KNN regressor wrapper for sklearn class KNeighborsRegressor.
     :formula: a string with the formula for y in terms of x_is

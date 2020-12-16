@@ -1,6 +1,7 @@
 from sklearn.neighbors import KNeighborsClassifier
 from src.models.BaseClassifier import BaseClassifier
 
+
 class knnClassifier(BaseClassifier):
     """KNN Classifier wrapper for sklearn class KNeighborsClassifier. This is just to show how the class structure could be extended.
     :formula: a string with the formula for y in terms of x_is

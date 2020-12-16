@@ -77,6 +77,15 @@ class lm(BaseRegressor):
             raise NotImplementedError
 
     def plot(self, which=None):
+        """
+        Implemented first three plots that are part of `R` plot command
+            1. "Residuals vs Fitted",
+            2. "Standardized residuals",
+            3. "Scale-Location"
+            4. This could be implemented later
+        :param which:
+        :return:
+        """
         if which == 1:
             # Residuals vs Fitted
             plt.scatter(self.fitted_values, self.residuals)
@@ -106,6 +115,12 @@ class lm(BaseRegressor):
 #         fig, axs = plt.subplots(4)
 
     def summary(self, print_summary=True):
+        """
+        Creating R like summary for the linear model.
+        Tried implementing the summary with the Jinja template, this could be a good further extension to the project
+        :param print_summary: Bool to either print or return the summary
+        :return: summary
+        """
         intercept_idx = len(self.coefs)-1
         pad_len = max(15,len(max(self.predictors, key=len)))
         intercept_idx = -1

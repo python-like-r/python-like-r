@@ -3,7 +3,7 @@ from src.models.BaseModel import BaseModel
 
 class BaseRegressor(BaseModel):
     """
-    TODO: Write comments
+    Creating separate parent class for all Regressors inheriting from the BaseModel
     """
     def __init__(self, formula, data=None):
         # Initializing parent class
