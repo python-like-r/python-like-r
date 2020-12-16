@@ -110,7 +110,7 @@ class BaseRegressorTest(TestCase):
         my_model = BaseRegressor("y~.", df1)
         pass
 
-_
+
 class BaseClassifierTest(TestCase):
     """
     This is a further extension to the project, making sure the not implemented error is being raised
