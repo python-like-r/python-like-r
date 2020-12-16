@@ -2,16 +2,19 @@ import pandas as pd
 
 from unittest import TestCase
 from src.utility.FormulaParser import FormulaParser
+from src.models.BaseModel import BaseModel
+from src.models.BaseRegressor import BaseRegressor
+from src.models.BaseClassifier import BaseClassifier
 from src.models.lm import lm
 
-class FormulaTest(TestCase):
+class FormulaParserTest(TestCase):
 
-    def test_input_formula(self):
+    def test_init(self):
         #test invalid chars
         self.assertRaises(ValueError, lambda: FormulaParser('y~x%', ["x", "y"]))
         self.assertRaises(ValueError, lambda: FormulaParser('y~x!', ["x", "y"]))
         #test number of "~" is not 1
-        self.assertRaises(ValueError,lambda: FormulaParser('y~~x',  ["x", "y"]))
+        self.assertRaises(ValueError, lambda: FormulaParser('y~~x',  ["x", "y"]))
         self.assertRaises(ValueError, lambda: FormulaParser('yx', ["x", "y"]))
         #test list properties
         self.assertRaises(ValueError, lambda: FormulaParser('y~x', ["x#", "y"]))
@@ -59,29 +62,55 @@ class FormulaTest(TestCase):
 
 df1 = pd.DataFrame({"x": [0, 0, 1, 1], "y": [0, 2, 4, 5]})
 
-class baseModel(TestCase):
+df2 = pd.DataFrame({"x": [1, 1, 1, 1], "y": [0, 1, 2, 3]})
+
+df3 = pd.DataFrame({"x": [0, 1, 2, 3, 4], "y": [4, 5, 6, 7, 8]})
+
+class BaseModelTest(TestCase):
+    def test_init(self):
+        my_model = BaseModel("y~.", df1)
+        self.assertRaises(NotImplementedError, lambda: my_model.fit())
+        self.assertRaises(NotImplementedError, lambda: my_model.summary())
+        self.assertRaises(NotImplementedError, lambda: my_model.plot())
+        self.assertRaises(TypeError, lambda: my_model.predict())
+        self.assertRaises(NotImplementedError, lambda: my_model.predict(df1))
+
     def test_getX(self):
-        my_model = baseModel("y~.", data=df1)
-        assert df1.equals(my_lm.getX(df1))
+        my_model = BaseModel("y~.", df1)
+        test_cases = [
+            (BaseModel("y~.", df1).getX(df1), pd.DataFrame({"x": [0, 0, 1, 1], "Intercept": [1, 1, 1, 1]})),
+            (BaseModel("y~.-1", df1).getX(df1), pd.DataFrame({"x": [0, 0, 1, 1]}))
+        ]
+        for case, expect in test_cases:
+            assert case.equals(expect)
 
-class baseRegressor(TestCase):
-    def test(self):
+class BaseRegressorTest(TestCase):
+    def test_init(self):
+        my_model = BaseRegressor("y~.",df1)
         pass
 
-class baseClassifier(TestCase):
-    def test(self):
-        pass
+class BaseClassifierTest(TestCase):
+    def test_init(self):
+        my_model = BaseClassifier("y~.",df1)
+        self.assertRaises(NotImplementedError, lambda:my_model.predict_proba(df1))
 
-class Test(TestCase):
-
+class LMTest(TestCase):
     def test_lm_fit(self):
-        my_lm = lm("y~.", data=df)
+        my_lm = lm("y~.", data=df1)
         my_lm.fit()
+        self.assertEqual(my_lm.intercept, 1.0)
+        self.assertEqual(my_lm.coefs[0], 3.5)
+
+        my_lm = lm("y~.-1", data=df2)
+        my_lm.fit()
+        self.assertEqual(my_lm.coefs[0], 1.5)
 
     def test_lm_predict(self):
-        pass
+        input1 = pd.DataFrame({"x": [0, 1]})
+        expected1 = np.array([1,4.5])
 
     def test_lm_summary(self):
+
         pass
 
     def test_lm_plot(self):

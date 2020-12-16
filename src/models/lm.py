@@ -30,6 +30,9 @@ class lm(BaseRegressor):
         self.cov = np.linalg.inv(X.T.dot(X))
         # (k,)
         self.coefs = self.cov.dot(X.T).dot(y)
+        # (1,)
+        if self.formula_parser.has_intercept():
+            self.intercept = self.coefs[-1]
         # (n,)
         self.fitted_values = self.coefs.dot(X.T)
         # (n,)

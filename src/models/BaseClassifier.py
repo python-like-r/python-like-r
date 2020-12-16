@@ -9,14 +9,5 @@ class BaseClassifier(BaseModel):
         # Initializing parent class
         super(BaseClassifier, self).__init__(formula, data)
 
-    def fit(self):
-        raise NotImplementedError
-
-    def summary(self):
-        raise NotImplementedError
-
-    def plot(self):
-        raise NotImplementedError
-
-    def predict(self, newdata):
+    def predict_proba(self, newdata):
         raise NotImplementedError
