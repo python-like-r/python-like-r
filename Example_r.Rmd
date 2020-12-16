@@ -20,6 +20,8 @@ summary(my_lm)
 plot(my_lm, which = 1)
 ```
 
-
+```{r}
+plot(my_lm, which = 2)
+```
 
 

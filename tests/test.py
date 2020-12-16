@@ -93,9 +93,8 @@ class BaseModelTest(TestCase):
         self.assertRaises(NotImplementedError, lambda: my_model.predict(df1))
 
     def test_getX(self):
-        my_model = BaseModel("y~.", df1)
         test_cases = [
-            (BaseModel("y~.", df1).getX(df1), pd.DataFrame({"x": [0, 0, 1, 1], "Intercept": [1, 1, 1, 1]})),
+            (BaseModel("y~.", df1).getX(df1), pd.DataFrame({"Intercept": [1, 1, 1, 1],"x": [0, 0, 1, 1]})),
             (BaseModel("y~.-1", df1).getX(df1), pd.DataFrame({"x": [0, 0, 1, 1]}))
         ]
         for case, expect in test_cases:
@@ -128,7 +127,7 @@ class LMTest(TestCase):
         my_lm = lm("y~.", data=df1)
         my_lm.fit()
         self.assertEqual(my_lm.intercept, 1.0)
-        self.assertEqual(my_lm.coefs[0], 3.5)
+        self.assertEqual(my_lm.coefs[1], 3.5)
 
         my_lm = lm("y~.-1", data=df2)
         my_lm.fit()

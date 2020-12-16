@@ -1,3 +1,5 @@
+import numpy as np
+import pandas as pd
 from src.utility.FormulaParser import FormulaParser
 from src.utility.helper import timing
 
@@ -49,8 +51,9 @@ class BaseModel:
         if self.formula_parser.has_intercept():
             X = data[[col for col in self.predictors if col != "Intercept"]]
             X["Intercept"] = 1
+            X = X[self.predictors]
         else:
-            X = data[self.predictors]
+            X = data.loc[:,self.predictors]
         return X
 
     @timing

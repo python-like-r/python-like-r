@@ -5,6 +5,8 @@ from src.models.lm import lm
 from src.models.knnRegressor import knnRegressor
 from src.models.knnClassifier import knnClassifier
 
+from src.models.BaseModel import BaseModel
+
 if __name__ == "__main__":
     model_formula = FormulaParser('dist~speed', ["speed", "dist"])
 
@@ -13,11 +15,12 @@ if __name__ == "__main__":
     my_lm = lm("y~.", data=df)
     my_lm.fit()
     my_lm.summary()
-
+    #
     df1 = pd.DataFrame({"x": [0, 0, 1, 1], "y": [0, 2, 4, 5]})
     predict_df = pd.DataFrame({"x": [0, 1]})
     my_lm = lm("y~.", data=df1)
     my_lm.fit()
+    my_lm.summary()
     y_hat = my_lm.predict(predict_df)
     print(y_hat)
 
@@ -29,4 +32,5 @@ if __name__ == "__main__":
     my_knn_class = knnClassifier("y~.", data=df2)
     my_knn_class.fit()
     print(my_knn_class.predict_proba(df2))
+
 
