@@ -233,14 +233,15 @@ class knnRegressorTest(TestCase):
         my_knn.fit()
         self.assertEqual(y_predict, my_knn.predict(df1).tolist())
 
-    def test_knn_predict_with_value(self):
+    def test_knn_predict_with_k_value(self):
         """
         Testing the predicted values of the knnRegressor with 2 nearest neighbors
         """
-        y_predict = [1, 1, 4.5, 4.5]
+        y_expected = [1, 1, 4.5, 4.5]
         my_knn = knnRegressor("y~.", k=2, data=df1)
         my_knn.fit()
-        self.assertEqual(y_predict, my_knn.predict(df1).tolist())
+        y_predicted = my_knn.predict(df1)
+        self.assertEqual(y_expected, y_predicted.tolist())
 
 
 class knnClassifierTest(TestCase):
@@ -267,14 +268,16 @@ class knnClassifierTest(TestCase):
         my_knn.fit()
         self.assertEqual(y_predict, my_knn.predict(df1).tolist())
 
-    def test_knn_predict_with_value(self):
+    def test_knn_predict_with_k_value(self):
         """
         Testing the predicted values of the knnClassifier with 4 nearest neighbors
         """
-        y_predict = [0.5, 0.5, 0.5, 0.5]
+        y_expected = [0.5, 0.5, 0.5, 0.5]
         my_knn = knnRegressor("y~.", k=4, data=df_cl)
         my_knn.fit()
-        self.assertEqual(y_predict, my_knn.predict(df1).tolist())
+
+        y_predicted = my_knn.predict(df1)
+        self.assertEqual(y_expected, y_predicted.tolist())
 
 
 class HelperTest(TestCase):
